@@ -1,12 +1,17 @@
 
+import datetime
+
 # event data is parsed from JSON
+
+def convert_json_times(timestamp):
+    return datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S')
 
 class Event(object):
     
     def __init__(self, startdate, enddate, house, location, description, title, category, members, displayStartDate, displayEndDate):
         
-        self.mStartDate = startdate
-        self.mEndDate = enddate
+        self.mStartDate = convert_json_times(startdate)
+        self.mEndDate = convert_json_times(enddate)
         self.mHouse = house
         self.mLocation = location
         self.mDescription = description
