@@ -2,12 +2,15 @@
 
 from ics import Calendar, Event
 
+def format_time(timestamp):
+    return datetime.datetime.strftime(timestamp, '%Y-%m-%d %H:%M:%S')
+
 def make(path, events):
     c = Calendar()
     for event in events:
         e = Event()
         e.name = event.name
-        e.begin = event.begin
+        e.begin = format_time(event.begin)
         c.events.add(e)
 
     with(path, 'w') as f:
