@@ -2,6 +2,17 @@
 
 from ics import Calendar, Event
 
+def make(path, events):
+    c = Calendar()
+    for event in events:
+        e = Event()
+        e.name = event.name
+        e.begin = event.begin
+        c.events.add(e)
+
+    with(path, 'w') as f:
+        f.writelines(c)
+
 def run():
     c = Calendar()
 
