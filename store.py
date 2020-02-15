@@ -8,8 +8,9 @@ def convert_json_times(timestamp):
 
 class Event(object):
     
-    def __init__(self, startdate, enddate, house, location, description, title, category, members, displayStartDate, displayEndDate):
+    def __init__(self, uid, startdate, enddate, house, location, description, title, category, members, displayStartDate, displayEndDate):
         
+        self.mUid = uid
         self.mStartDate = convert_json_times(startdate)
         self.mEndDate = convert_json_times(enddate)
         self.mHouse = house
@@ -49,6 +50,7 @@ def transform(event_data):
     for key in results:
         events = key["Events"]
         for event in events:
+            uid = event["Id"]
             startdate = event["StartDateTime"]
             enddate = event["EndDateTime"]
             house = event["House"]
@@ -59,6 +61,6 @@ def transform(event_data):
             members = event["Members"]
             displaystart = event["DisplayStartTime"]
             displayend = event["DisplayEndTime"]
-            eventArray.append(Event(startdate, enddate, house, location, description, title, category, members, displaystart, displayend))
+            eventArray.append(Event(uid, startdate, enddate, house, location, description, title, category, members, displaystart, displayend))
             
     return eventArray
