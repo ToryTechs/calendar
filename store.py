@@ -5,13 +5,13 @@ class Event(object):
     
     def __init__(self, startdate, enddate, house, location, description, title, category):
         
-        self.mStartDate = ""
-        self.mEndDate = ""
-        self.mHouse = ""
-        self.mLocation = ""
-        self.mDescription = ""
-        self.mTitle = ""
-        self.mCategory = ""
+        self.mStartDate = startdate
+        self.mEndDate = enddate
+        self.mHouse = house
+        self.mLocation = location
+        self.mDescription = description
+        self.mTitle = title
+        self.mCategory = category
 
 
 def fakeData():
