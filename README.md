@@ -13,7 +13,8 @@ Events:
 
 * start time
 * end time
-* event type
+* location
 * which house it is
 * description
 * title
+* category
