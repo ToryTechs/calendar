@@ -59,7 +59,9 @@ def run():
     argParser.add_argument("--outputfile", help="Save the calendar as an ICS file (or to STDOUT if not specified)", required=False)
     # The House - Commons or Lords
     argParser.add_argument("--house", help="The House (default: Commons) - needed in conjunction with --singledate", required=False, default="Commons")
-
+    # export the json for caching
+    argParser.add_argument("--jsondump", help="Dump the json file instead of exporting an ics file", action="store_true", required=False)
+    
     args = argParser.parse_args()
 
     if args.inputfile is not None:
@@ -78,9 +80,16 @@ def run():
         if date is not None:
             # scrape, parse and export an ics file
             parliament_response_obj = scrape.get_parliament_events_data(date, args.house)
-            ics_events = convert_parliament_website_event_data_to_ics_events(parliament_response_obj)
-            ics_calendar = create_ics_calendar_for_events(ics_events)
-            output_calendar_ics(ics_calendar, args.outputfile)
+            if args.jsondump is True:
+                if args.outputfile is not None:
+                    with open(args.outputfile, "w") as json_file:
+                        json_file.write(json.dumps(parliament_response_obj)) 
+                else:
+                    print(json.dumps(parliament_response_obj))
+            else:
+                ics_events = convert_parliament_website_event_data_to_ics_events(parliament_response_obj)
+                ics_calendar = create_ics_calendar_for_events(ics_events)
+                output_calendar_ics(ics_calendar, args.outputfile)
         else:
             print("The date format is invalid.  Please use --help.")
     else:
