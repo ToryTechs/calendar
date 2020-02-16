@@ -80,7 +80,9 @@ def run():
         for (root, dirs, files) in os.walk(args.inputdirectory, topdown=True):
             for filename in files:
                 if filename.endswith(".json"):
-                    parliament_response_obj = json.load(open(os.path.join(root, filename), 'r'))
+                    json_filename = os.path.join(root, filename)
+                    parliament_response_obj = json.load(open(json_filename, 'r'))
+                    print(json_filename)
                     ics_events = convert_parliament_website_event_data_to_ics_events(parliament_response_obj)
                     all_events_from_json_files.extend(ics_events)
         ics_calendar = create_ics_calendar_for_events(all_events_from_json_files)
