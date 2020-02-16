@@ -1,20 +1,20 @@
-Parliamentary Calendar to ICS scraper
-=====================================
-
-Parts:
+# Parliamentary Calendar to ICS scraper
 
 * obtain data from parliament website
-* extract data that is relevant
 * generate an iCalendar file
-* put the file at a known rendevous location
-* advertise the rendezvous location via an appropriately formatted email
 
-Events:
+## Usage - Scraper and Converter
 
-* start time
-* end time
-* location
-* which house it is
-* description
-* title
-* category
+See the help information
+
+```
+python3 ./main.py --help
+```
+
+## Usage - Scheduled Task
+
+See the help information
+
+```
+python3 ./scheduled_task.py --help
+```
