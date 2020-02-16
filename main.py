@@ -5,6 +5,8 @@ from datetime import datetime
 import json
 import ics_converter
 import scrape
+from ics import Calendar
+import os
 
 #import create_ics
 #import store
@@ -29,7 +31,7 @@ def try_convert_date_from_str(s):
         return None
 
 
-def output_calendar_ics(calendar, filename):
+def output_calendar_ics(calendar: Calendar, filename: str):
     if filename is None:
         print(str(calendar))
     else:
@@ -37,7 +39,7 @@ def output_calendar_ics(calendar, filename):
             ics_file.writelines(calendar)
 
 
-def convert_parliament_website_event_data_to_ics_events(result_object):
+def convert_parliament_website_event_data_to_ics_events(result_object: {}):
     if result_object["Results"]["HasEvents"] is True:
         return ics_converter.parse_parliament_groupped_events(result_object["Results"]["Groupings"])
     else:
@@ -51,9 +53,9 @@ def create_ics_calendar_for_events(ics_events: []):
 
 def run():
     argParser = argparse.ArgumentParser()
-    # use a json file stored locally for testing or caching purposes
+    # load data from a json file stored locally
     argParser.add_argument("--inputfile", help="Use data stored in a json file", type=argparse.FileType("r"), required=False)
-    # scrape the events of a specific day on the Parliament website
+    # scrape and load the events of a specific day on the Parliament website
     argParser.add_argument("--singledate", help="Scrape calendar events of a specific date in the format of yyyy-mm-dd from the Parliament website", required=False)
     # the filename for the ics file.  if not set, print to the screen.
     argParser.add_argument("--outputfile", help="Save the calendar as an ICS file (or to STDOUT if not specified)", required=False)
@@ -61,7 +63,9 @@ def run():
     argParser.add_argument("--house", help="The House (default: Commons) - needed in conjunction with --singledate", required=False, default="Commons")
     # export the json for caching
     argParser.add_argument("--jsondump", help="Dump the json file instead of exporting an ics file", action="store_true", required=False)
-    
+    # load data from json files stored in a local directory 
+    argParser.add_argument("--inputdirectory", help="Use data stored in json files inside a directory", required=False)
+
     args = argParser.parse_args()
 
     if args.inputfile is not None:
@@ -69,6 +73,17 @@ def run():
         parliament_response_obj = json.load(args.inputfile)
         ics_events = convert_parliament_website_event_data_to_ics_events(parliament_response_obj)
         ics_calendar = create_ics_calendar_for_events(ics_events)
+        output_calendar_ics(ics_calendar, args.outputfile)
+    elif args.inputdirectory is not None:
+        # load all json files in a directory and its sub directories
+        all_events_from_json_files = []
+        for (root, dirs, files) in os.walk(args.inputdirectory, topdown=True):
+            for filename in files:
+                if filename.endswith(".json"):
+                    parliament_response_obj = json.load(open(os.path.join(root, filename), 'r'))
+                    ics_events = convert_parliament_website_event_data_to_ics_events(parliament_response_obj)
+                    all_events_from_json_files.extend(ics_events)
+        ics_calendar = create_ics_calendar_for_events(all_events_from_json_files)
         output_calendar_ics(ics_calendar, args.outputfile)
     elif args.singledate is not None:
         # for scraping, the House needs to be specified
